@@ -1,0 +1,13 @@
+# Segredos: nunca versionar
+iot/pev_esp32/segredos.h
+servidor/senha.hash
+servidor/segredo.key
+servidor/sensor.token
+*.key
+*.token
+
+# Gerados
+__pycache__/
+*.pyc
+.venv/
+build/
