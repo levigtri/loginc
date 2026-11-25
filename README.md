@@ -204,6 +204,15 @@ docs/qrcode/                   QR code da demonstração e o script que o gera
 - Abatimento da Moeda Verde na conta de água, se o serviço for municipal.
 - Relatório mensal automático para a prefeitura e evidências para o IQM e para os créditos de reciclagem.
 
+## Uso de inteligência artificial
+
+Conforme o edital, declaramos o uso de IA neste projeto:
+
+- **Claude (Anthropic):** apoio na análise do desafio e da legislação (IPTU Verde, IQM/ICMS, créditos de reciclagem), na escrita do código do protótipo web, do servidor e do firmware da ESP32, na geração do QR code e na redação deste README.
+- **Whisper (OpenAI, modelo aberto):** transcrição dos áudios das conversas com a Prefeitura e com os mentores.
+
+As decisões de produto, as regras de negócio, a montagem e a calibração do hardware, os testes e a validação com os stakeholders foram feitos pela equipe. Todo o código foi revisado e testado pela equipe, e todos os dados usados são fictícios.
+
 ## Equipe
 
 | Nome | Curso |
