@@ -990,7 +990,7 @@ input,select,textarea{font-family:inherit}
         </div>
         <div style="display:flex;gap:18px;align-items:flex-end">
           <div style="position:relative;width:120px;height:180px;flex:none;border-radius:14px 14px 22px 22px;background:#ECE7DA;border:4px solid #15281D;overflow:hidden">
-            <div style="position:absolute;left:0;right:0;bottom:0;height:{{ p.fillH }};background:{{ p.fillCor }};transition:height .8s cubic-bezier(.3,.8,.3,1),background .3s;background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.14) 0 8px,transparent 8px 16px)"></div>
+            <div style="position:absolute;left:0;right:0;bottom:0;height:{{ p.fillH }};background:{{ p.fillCor }};transition:height .35s ease-out,background .3s;background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.14) 0 8px,transparent 8px 16px)"></div>
             <div style="position:absolute;left:0;right:0;top:30%;border-top:2px dashed #D8433B"></div>
             <span style="position:absolute;right:4px;top:calc(30% - 16px);font:700 10px 'JetBrains Mono',monospace;color:#D8433B">70%</span>
             <div style="position:absolute;left:50%;top:-2px;transform:translateX(-50%);width:46px;height:12px;background:#15281D;border-radius:0 0 8px 8px"></div>
@@ -1350,7 +1350,7 @@ class Component extends DCLogic {
   static VIEWS = ['home','catador','empresa','pev','central','prefeitura'];
   hashView(){ try{ const h=(location.hash||'').replace('#','').toLowerCase(); return Component.VIEWS.includes(h)?h:null; }catch(e){ return null; } }
   isIsolado(){ try{ return new URLSearchParams(location.search).has('isolado'); }catch(e){ return false; } }
-  componentDidMount(){ this.timer=setInterval(()=>this.tick(),1300); this.sensorTimer=setInterval(()=>this.pollSensor(),1000); this.pollSensor();
+  componentDidMount(){ this.timer=setInterval(()=>this.tick(),1300); this.sensorTimer=setInterval(()=>this.pollSensor(),400); this.pollSensor();
     this.onHash=()=>{ const hv=this.hashView(); if(hv&&hv!==this.state.view) this.setState({view:hv}); }; window.addEventListener('hashchange',this.onHash); }
   componentWillUnmount(){ clearInterval(this.timer); clearInterval(this.sensorTimer); window.removeEventListener('hashchange',this.onHash); try{speechSynthesis.cancel();}catch(e){} }
   componentDidUpdate(pp,ps){

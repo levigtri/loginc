@@ -10,7 +10,7 @@ Arquivos no mesmo diretório:
 Sensor do PEV:
   POST /api/sensor  Authorization: Bearer <sensor.token>
                     {"pev": "v2", "distancia_cm": 63.2, "altura_cm": 120}
-  GET  /api/sensor  (público) última leitura de cada PEV, lida pela página a cada 1 s
+  GET  /api/sensor  (público) última leitura de cada PEV, lida pela página a cada 0,4 s
 
 Só "/" (a demonstração completa) pede senha; /catador, /empresa, /pev, /central
 e /prefeitura abrem direto.

@@ -26,7 +26,7 @@ const float ALTURA_CM = 32.0;        // calibrado: o que o sensor lê com a lata
 const float DIST_CHEIO_CM = 5.8;     // medido: papelão na BORDA da caixa (= 100%); confira com régua
 const float ZONA_MORTA_CM = 0.8;     // até isso acima do fundo conta como vazio (ruído do sensor)
 const float CAPACIDADE_L = 9.0;      // capacidade da caixa (rótulo); 23 x 17 cm externos dariam ~10,2 L
-const uint32_t INTERVALO_MS = 1000;  // 1 s para testar; em campo, 15 min (900000)
+const uint32_t INTERVALO_MS = 250;   // demo em tempo real: ~4 leituras/s; em campo, 15 min (900000)
 
 // Altura útil: do fundo até a borda (o trecho entre a borda e o sensor não guarda lixo).
 const float UTIL_CM = ALTURA_CM - DIST_CHEIO_CM;
@@ -52,22 +52,22 @@ float medirCm() {
   digitalWrite(PINO_TRIG, HIGH);
   delayMicroseconds(10);
   digitalWrite(PINO_TRIG, LOW);
-  unsigned long us = pulseIn(PINO_ECHO, HIGH, 30000);  // 30 ms ≈ 5 m; 0 = sem eco
+  unsigned long us = pulseIn(PINO_ECHO, HIGH, 6000);  // 6 ms ≈ 1 m (a caixa tem 32 cm); 0 = sem eco
   if (us == 0) return -1;
   return us * 0.0343f / 2.0f;  // som a ~343 m/s, ida e volta
 }
 
-// 15 disparos e fica com o 2º eco mais perto: papel amassado e sacola só devolvem eco
+// 7 disparos e fica com o 2º eco mais perto: papel amassado e sacola só devolvem eco
 // de vez em quando (o resto do som "atravessa" pelos vãos e volta do fundo), então basta
 // o objeto responder 2 vezes para contar; um único eco curto falso não ganha.
-const int DISPAROS = 15;
+const int DISPAROS = 7;   // era 15: menos disparos = leitura mais rápida para a demo
 float leituraBrutaCm() {
   float v[DISPAROS];
   int n = 0;
   for (int i = 0; i < DISPAROS; i++) {
     float d = medirCm();
     if (d >= 2 && d <= 400) v[n++] = d;
-    delay(30);  // deixa o eco anterior morrer dentro da lata
+    delay(15);  // deixa o eco anterior morrer dentro da lata (32 cm: o eco volta em ~2 ms)
   }
   if (n < 3) return -1;  // poucos ecos: leitura não confiável
   for (int i = 1; i < n; i++) {
@@ -82,7 +82,7 @@ float leituraBrutaCm() {
 // Filtro assimétrico: lixo aparecendo (mais perto) vale na hora; ficar mais longe
 // (esvaziou?) só vale depois de CONFIRMA_LONGE leituras seguidas. Some com os pulos
 // para o fundo quando o pulso desvia de um objeto macio ou inclinado.
-const int CONFIRMA_LONGE = 6;  // lixo não some sozinho: baixar o nível exige ~6-8 s seguidos
+const int CONFIRMA_LONGE = 2;  // lixo não some sozinho: baixar o nível exige 2 leituras seguidas (~0,5 s)
 const float TOLERANCIA_CM = 1.5;
 float estavelCm = -1;
 int seguidasLonge = 0;
@@ -97,8 +97,8 @@ float filtrarCm(float cm) {
   seguidasSemEco = 0;
   if (estavelCm < 0 || cm <= estavelCm + TOLERANCIA_CM) {
     seguidasLonge = 0;
-    // perto do valor atual: média suave (tira o tremido); bem mais perto: aceita direto
-    estavelCm = (estavelCm >= 0 && cm >= estavelCm - TOLERANCIA_CM) ? 0.6f * estavelCm + 0.4f * cm : cm;
+    // perto do valor atual: média leve (tira o tremido sem atrasar); bem mais perto: aceita direto
+    estavelCm = (estavelCm >= 0 && cm >= estavelCm - TOLERANCIA_CM) ? 0.3f * estavelCm + 0.7f * cm : cm;
   } else if (++seguidasLonge >= CONFIRMA_LONGE) {
     seguidasLonge = 0;
     estavelCm = cm;
